@@ -128,4 +128,106 @@ print "Randomly generated examples:"
 # to a loss of generality.
 # But does that mean that all of our hard work in creating the machinery
 # of the ComplexNumber class will go to waste? Certainly not.
-# We wil
+
+# We will now create a class to represent something that is not quite a number.
+# It will behave a lot like a number, but without every having an actual value.
+# We will call such nebulous artifacts "variables" for now. I'm not sure that is
+# quite the right word, you can decide for yourself.
+# TODO explain uniqueness.
+
+# We will put Variables inside ComplexNumbers as real and imaginary components.
+# So Variables will need to be able to do everything that a number does.
+
+class Variable(object):
+  """
+  Variables are like numbers, but they have no value.
+
+  Variables must be able to do everything that
+  """
+
+  def __init__(self):
+    """
+    Each Variable we create will have its own unique identity.
+    It will be distinctly differentiable from every other Variable
+    that exists. However, we must make this so WITHOUT assigning
+    a value to the variable.
+
+    I will whimsically name each Variable's bit of uniqueness
+    it's immortal soul. There are many ways to do this, but in
+    this example the soul is implemented as a dictionary which we
+    will only use by comparing it's location in memory to other
+    dictionary souls using the 'is' operator.
+    """
+    self.soul = {}
+
+  def __add__(left, right):
+    """ The sum of two variables in an object representing just that. """
+    return VariableSum(left, right)
+
+  def __sub__(left, right):
+    """ The difference of two variables in an object representing just that. """
+    return VariableDifference(left, right)
+
+  def __pos__(self):
+    """ +v is the same as v """
+    return self
+
+  def __neg__(self):
+    """ -v is the negated version of the variable v """
+    return NegatedVariable(self)
+
+  def __eq__(left, right):
+    # TODO WHAT!?!?
+    pass
+
+  def __ne__(left, right):
+    # TODO WHAT!?!?
+    pass
+
+# Whew, that's pretty weird.
+# We seem to have referenced a bunch of classes in the methods of Variable
+# which do not exist yet. Let's go ahead and create those classes.
+
+class VariableSum(object):
+  """ A VariableSum represents the result of adding two Variables """
+
+  def __init__(self, left, right):
+    """ A variable sum stores the left and right elements in the addition """
+    self.left = left
+    self.right = right
+
+  # def __neg__(self)
+
+class VariableDifference(object):
+  """ A VariableDifference is just like a VariableSum, really. """
+  def __init__(self, left, right):
+    self.left = left
+    self.right = right
+
+class NegatedVariable(Variable):
+  """
+  Notice the Variable appears above instead of object.
+  This denotes that a NegatedVariable is really a kind of Variable.
+  Technically, NegatedVariable inherits all of the methods of
+  from Variable. So NegatedVariables know how to do all the same tricks,
+  like participating in addition and stuff.
+
+  The exception is negation. NegatedVariable has its own special definition
+  of negation, which you will see below.
+  """
+  def __init__(self, variable):
+    self.variable = variable
+
+  def __neg__(self):
+    """
+    A twice negated variable is just the original variable.
+    -(-v) = v
+    """
+    return self.variable
+
+# TODO im confused
+print "General evaluation:"
+a = ComplexNumber(Variable(), Variable())
+b = ComplexNumber(Variable(), Variable())
+print (a - b).conj()
+# print (a - b).conj() == a.conj() - b.conj() # -> True
