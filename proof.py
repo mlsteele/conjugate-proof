@@ -71,7 +71,7 @@ class ComplexNumber(object):
 
 # Now that we have our complex number class,
 # let's test it out on a few examples.
-print "Complex number examples:"
+print "\nComplex number examples:"
 x = ComplexNumber(8, 5)
 y = ComplexNumber(3, 2)
 print x                        # -> 8 + 5i
@@ -90,7 +90,7 @@ print x.conj()                 # -> 8 + -5i
 
 # Now let's try the equation in question with a few examples.
 # (a - b)* = a* - b*
-print "Equation example:"
+print "\nEquation example:"
 a = ComplexNumber(8, 5)
 b = ComplexNumber(3, 2)
 print (a - b).conj()                        # -> 5 + -3i
@@ -99,7 +99,7 @@ print (a - b).conj() == a.conj() - b.conj() # -> True
 
 # Great, it looks like the equation holds for those values.
 # How about a few more?
-print "More equation examples:"
+print "\nMore equation examples:"
 az = [ComplexNumber(8, 5),  ComplexNumber(-2, 3), ComplexNumber(-9, -3), ComplexNumber(1027, -304)]
 bz = [ComplexNumber(9, -2), ComplexNumber(8, 4),  ComplexNumber(6, 9),   ComplexNumber(0, 0)      ]
 for a,b in zip(az, bz):
@@ -108,7 +108,7 @@ for a,b in zip(az, bz):
 # But this does not prove the equation true, you say.
 # Well, what if we try for 10000 different randomly generated examples?
 # TODO uncomment this block.
-print "Randomly generated examples:"
+print "\nRandomly generated examples:"
 # from random import randint
 # for _ in xrange(10000):
 #   a = ComplexNumber(randint(-1000, 1000), randint(-1000, 1000))
@@ -134,6 +134,7 @@ print "Randomly generated examples:"
 # We will call such nebulous artifacts "variables" for now. I'm not sure that is
 # quite the right word, you can decide for yourself.
 # TODO explain uniqueness.
+# TODO note "immature method of dealing" with possible equality, crashing.
 
 # We will put Variables inside ComplexNumbers as real and imaginary components.
 # So Variables will need to be able to do everything that a number does.
@@ -178,11 +179,26 @@ class Variable(object):
 
   def __eq__(left, right):
     # TODO WHAT!?!?
-    pass
+    # This is called explicit type checking.
+    # Some python people would tell me this is bad.
+    # They would rather I just found a way for NegatedVariables to have souls
+    # and compare them without knowing it.
+    # NegatedVariables do not currently have souls. Oh well.
+    if isinstance(left, NegatedVariable) and isinstance(right, NegatedVariable):
+      return -left == -right
+    elif left.soul is right.soul:
+      return True
+    else:
+      # TODO this is dumb.
+      raise Exception("I'm confused. Are two distinct variables equal. Who am I to say? They could be. Is one variable equal to its negative?")
 
   def __ne__(left, right):
     # TODO WHAT!?!?
-    pass
+    if left.soul is right.soul:
+      return False
+    else:
+      # TODO this is dumb.
+      raise Exception("I'm confused. Are two distinct variables not equal?")
 
 # Whew, that's pretty weird.
 # We seem to have referenced a bunch of classes in the methods of Variable
@@ -196,10 +212,55 @@ class VariableSum(object):
     self.left = left
     self.right = right
 
-  # def __neg__(self)
+  def __neg__(self):
+    """
+    To negate a sum like -(x + y),
+    just negate it's parts  (-x + -y)
+    """
+    return VariableSum(-self.left, -self.right)
+
+  def __eq__(left, right):
+    """ Check whether a sum of variables is the same as another sum of variables. """
+    # Yes, this line is confusing.
+    if left.left == right.left and left.right == right.right:
+      return True
+    else:
+      # Yeah, there are other ways that sums could be equal.
+      # For example, (a + b) = (b + a)
+      # I think we should just crash.
+      raise Exception("Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.")
+
+  def __neq__(left, right):
+    """ Check whether a sum of variables is NOT the same as another sum of variables. """
+    if left.left == right.left and left.right == right.right:
+      return False
+    else:
+      # Yeah, there are other ways that sums could be equal.
+      # For example, (a + b) = (b + a)
+      # I think we should just crash.
+      raise Exception("Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.")
+
+
+def VariableDifference(left, right):
+  """
+  Surprise! I'm not going to make VariableDifference a class.
+  I know, and you were just starting to see where this was going.
+  I'm sorry. But think about it like this.
+
+  A VariableDifference is really just a VariableSum
+  but where the second operand has been negated.
+  In other words (a - b) = (a + (-b)).
+
+  Since we know how to add, and we know how to negate, we
+  can make VariableDifference look like a constructor, but
+  really return an instance of VariableSum.
+  """
+  return VariableSum(left, -right)
 
 class VariableDifference(object):
-  """ A VariableDifference is just like a VariableSum, really. """
+  """
+  A VariableDifference is just like a VariableSum.
+  """
   def __init__(self, left, right):
     self.left = left
     self.right = right
@@ -226,8 +287,10 @@ class NegatedVariable(Variable):
     return self.variable
 
 # TODO im confused
-print "General evaluation:"
+print "\nGeneral evaluation:"
 a = ComplexNumber(Variable(), Variable())
 b = ComplexNumber(Variable(), Variable())
-print (a - b).conj()
-# print (a - b).conj() == a.conj() - b.conj() # -> True
+print (a - b).conj() == a.conj() - b.conj() # -> True
+
+
+# TODO tada
