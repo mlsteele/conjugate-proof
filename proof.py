@@ -2,6 +2,11 @@
 #   (a - b)* = a* - b*
 # where * means complex conjugate.
 
+# As a refresher, a complex conjugate of a complex number
+# is the number which is the same but for a negated imaginary
+# component. For examples, the complex conjugate of 4 + 3i
+# is 4 - 3i.
+
 # We will do this by exploring through programming.
 # First, we will tell python what a complex number is
 # by creating a class to store the real and imaginary
@@ -107,15 +112,17 @@ for a,b in zip(az, bz):
 
 # But this does not prove the equation true, you say.
 # Well, what if we try for 10000 different randomly generated examples?
-# TODO uncomment this block.
 print "\nRandomly generated examples:"
-# from random import randint
-# for _ in xrange(10000):
-#   a = ComplexNumber(randint(-1000, 1000), randint(-1000, 1000))
-#   b = ComplexNumber(randint(-1000, 1000), randint(-1000, 1000))
-#   print (a - b).conj() == a.conj() - b.conj() # -> ... True
+from random import randint
+for _ in xrange(10000):
+  a = ComplexNumber(randint(-1000, 1000), randint(-1000, 1000))
+  b = ComplexNumber(randint(-1000, 1000), randint(-1000, 1000))
+  truth = (a - b).conj() == a.conj() - b.conj() # -> ... True
+  if not truth:
+    print "It was false!"
+print "\nIf nothing to the contrary is printed above, then all the examples checked out."
 
-# Those all worked!
+# Those all worked! At least for me. You can give it a shot if you want.
 # The equation seems to hold up.
 # It seems very unlikely for there to be holes in the coverage of this equation.
 # Is that good enough?
@@ -143,7 +150,7 @@ class Variable(object):
   """
   Variables are like numbers, but they have no value.
 
-  Variables must be able to do everything that
+  Variables must be able to do everything that numbers can do.
   """
 
   def __init__(self):
@@ -153,21 +160,24 @@ class Variable(object):
     that exists. However, we must make this so WITHOUT assigning
     a value to the variable.
 
-    I will whimsically name each Variable's bit of uniqueness
+    I will whimsically name each Variable's niblet of uniqueness
     it's immortal soul. There are many ways to do this, but in
     this example the soul is implemented as a dictionary which we
-    will only use by comparing it's location in memory to other
-    dictionary souls using the 'is' operator.
+    will only use by comparing its location in memory to other
+    dictionary-souls using the 'is' operator.
     """
     self.soul = {}
 
   def __add__(left, right):
-    """ The sum of two variables in an object representing just that. """
+    """ The sum of two variables is an object representing just that. """
     return VariableSum(left, right)
 
   def __sub__(left, right):
-    """ The difference of two variables in an object representing just that. """
-    return VariableDifference(left, right)
+    """
+    The difference of two variables is just the sum where the right one is negated.
+    (a - b) = (a + (-b))
+    """
+    return VariableSum(left, -right)
 
   def __pos__(self):
     """ +v is the same as v """
@@ -240,34 +250,9 @@ class VariableSum(object):
       # I think we should just crash.
       raise Exception("Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.")
 
-
-def VariableDifference(left, right):
-  """
-  Surprise! I'm not going to make VariableDifference a class.
-  I know, and you were just starting to see where this was going.
-  I'm sorry. But think about it like this.
-
-  A VariableDifference is really just a VariableSum
-  but where the second operand has been negated.
-  In other words (a - b) = (a + (-b)).
-
-  Since we know how to add, and we know how to negate, we
-  can make VariableDifference look like a constructor, but
-  really return an instance of VariableSum.
-  """
-  return VariableSum(left, -right)
-
-class VariableDifference(object):
-  """
-  A VariableDifference is just like a VariableSum.
-  """
-  def __init__(self, left, right):
-    self.left = left
-    self.right = right
-
 class NegatedVariable(Variable):
   """
-  Notice the Variable appears above instead of object.
+  Notice that Variable appears above instead of object.
   This denotes that a NegatedVariable is really a kind of Variable.
   Technically, NegatedVariable inherits all of the methods of
   from Variable. So NegatedVariables know how to do all the same tricks,
@@ -291,6 +276,5 @@ print "\nGeneral evaluation:"
 a = ComplexNumber(Variable(), Variable())
 b = ComplexNumber(Variable(), Variable())
 print (a - b).conj() == a.conj() - b.conj() # -> True
-
 
 # TODO tada
