@@ -1,0 +1,25 @@
+We will set out to prove
+  (a - b)* = a* - b*
+where * means complex conjugate.
+
+We will do this by exploring through programming.
+
+> write complex number class
+
+Now that we have our complex number class, let's try a few examples.
+
+> Try examples.
+
+We have now verified the theorem for a few examples.
+But this is not a proof you say.
+Well, what if we try for 10000 different randomly generated examples.
+> do stuff
+It seems to hold up. It is very unlikely for there to be holes in the coverage of this theorem. Is that good enough?
+
+No? Ok, well let's try it generally then.
+
+> game on
+> explain and create "a number" variable class.
+
+> weak theorem: when all numbers are unique.
+> improve equality to return an equality class of undetermined value
