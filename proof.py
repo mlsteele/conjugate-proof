@@ -140,6 +140,7 @@ print "\nIf nothing to the contrary is printed above, then all the examples chec
 # It will behave a lot like a number, but without every having an actual value.
 # We will call such nebulous artifacts "variables" for now. I'm not sure that is
 # quite the right word, you can decide for yourself.
+
 # TODO explain uniqueness.
 # TODO note "immature method of dealing" with possible equality, crashing.
 
@@ -151,22 +152,19 @@ class Variable(object):
   Variables are like numbers, but they have no value.
 
   Variables must be able to do everything that numbers can do.
+
+  Each Variable we create will have its own unique identity.
+  It will be distinctly differentiable from every other Variable
+  that exists. However, we must make this so WITHOUT assigning
+  a value to the variable.
   """
 
   def __init__(self):
     """
-    Each Variable we create will have its own unique identity.
-    It will be distinctly differentiable from every other Variable
-    that exists. However, we must make this so WITHOUT assigning
-    a value to the variable.
-
-    I will whimsically name each Variable's niblet of uniqueness
-    it's immortal soul. There are many ways to do this, but in
-    this example the soul is implemented as a dictionary which we
-    will only use by comparing its location in memory to other
-    dictionary-souls using the 'is' operator.
+    Variables have an empty constructor because they do not
+    have any value to remember.
     """
-    self.soul = {}
+    pass
 
   def __add__(left, right):
     """ The sum of two variables is an object representing just that. """
@@ -188,27 +186,16 @@ class Variable(object):
     return NegatedVariable(self)
 
   def __eq__(left, right):
-    # TODO WHAT!?!?
-    # This is called explicit type checking.
-    # Some python people would tell me this is bad.
-    # They would rather I just found a way for NegatedVariables to have souls
-    # and compare them without knowing it.
-    # NegatedVariables do not currently have souls. Oh well.
-    if isinstance(left, NegatedVariable) and isinstance(right, NegatedVariable):
-      return -left == -right
-    elif left.soul is right.soul:
-      return True
+    # TODO figure this out.
+    if isinstance(right, NegatedVariable):
+      # The right variable is negated, but the left is not.
+      raise Exception("Is a variable equal to another variables negative? What about it's own negative?")
     else:
-      # TODO this is dumb.
-      raise Exception("I'm confused. Are two distinct variables equal. Who am I to say? They could be. Is one variable equal to its negative?")
+      # Both variables are non-negated.
+      return left is right
 
   def __ne__(left, right):
-    # TODO WHAT!?!?
-    if left.soul is right.soul:
-      return False
-    else:
-      # TODO this is dumb.
-      raise Exception("I'm confused. Are two distinct variables not equal?")
+    return not (left == right)
 
 # Whew, that's pretty weird.
 # We seem to have referenced a bunch of classes in the methods of Variable
@@ -270,6 +257,19 @@ class NegatedVariable(Variable):
     -(-v) = v
     """
     return self.variable
+
+  def __eq__(left, right):
+    # TODO figure this out.
+    if isinstance(right, NegatedVariable):
+      # Both variables are negated.
+      return -left == -right
+    else:
+      # The left variable is negated, but the right is not.
+      raise Exception("Is a variable equal to another variables negative? What about it's own negative?")
+
+  def __ne__(left, right):
+    return not (left == right)
+
 
 # TODO im confused
 print "\nGeneral evaluation:"
