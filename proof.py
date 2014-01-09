@@ -271,10 +271,9 @@ class NegatedVariable(Variable):
     return not (left == right)
 
 
-# TODO im confused
 print "\nGeneral evaluation:"
 a = ComplexNumber(Variable(), Variable())
 b = ComplexNumber(Variable(), Variable())
 print (a - b).conj() == a.conj() - b.conj() # -> True
 
-# TODO tada
+# TODO conclude
