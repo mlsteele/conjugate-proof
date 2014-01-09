@@ -33,7 +33,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>As a refresher, a complex conjugate of a complex number is the number which is the same but for a negated imaginary component. For examples, the complex conjugate of <code>4 + 3i</code> is <code>4 - 3i</code>.</p>
 <p>We will do this by exploring through programming. First, we will tell python what a complex number is by creating a class to store the real and imaginary components and teach it how to manipulate the numbers in such ways as addition and subtraction by using methods on the complex number class.</p>
 <p>Python actually has support for complex numbers built in. This is fantastic, but we are not going to use its built in support. The reason is two-fold. First, it is fun to see the inner workings of the complex number class. Secondly, writing our own will make it easier to debug, understand, and ensure the validity of the funny business we will be doing later, which will involve shoveling things that are not quite numbers through the complex number class machinery.</p>
-<p>You can grab a copy of the <a href="proof.py">python source</a> for this at any point, or clone the <a href="http://github.com/mlsteele/conjugate-proof">github repository</a>..</p>
+<p>You can grab a copy of the <a href="proof.py">python source</a> for this at any point, or clone the <a href="http://github.com/mlsteele/conjugate-proof">github repository</a>.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> ComplexNumber(<span class="dt">object</span>):
   <span class="co">&quot;&quot;&quot;</span>
 <span class="co">  Class for manipulating complex numbers.</span>
