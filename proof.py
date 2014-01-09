@@ -23,7 +23,6 @@
 # later, which will involve shoveling things that are not quite
 # numbers through the complex number class machinery.
 
-
 class ComplexNumber(object):
   """
   Class for manipulating complex numbers.
@@ -73,9 +72,9 @@ class ComplexNumber(object):
     """
     return "{} + {}i".format(self.real, self.imag)
 
-
 # Now that we have our complex number class,
 # let's test it out on a few examples.
+
 print "\nComplex number examples:"
 x = ComplexNumber(8, 5)
 y = ComplexNumber(3, 2)
@@ -95,6 +94,7 @@ print x.conj()                 # -> 8 + -5i
 
 # Now let's try the equation in question with a few examples.
 # (a - b)* = a* - b*
+
 print "\nEquation example:"
 a = ComplexNumber(8, 5)
 b = ComplexNumber(3, 2)
@@ -104,6 +104,7 @@ print (a - b).conj() == a.conj() - b.conj() # -> True
 
 # Great, it looks like the equation holds for those values.
 # How about a few more?
+
 print "\nMore equation examples:"
 az = [ComplexNumber(8, 5),  ComplexNumber(-2, 3), ComplexNumber(-9, -3), ComplexNumber(1027, -304)]
 bz = [ComplexNumber(9, -2), ComplexNumber(8, 4),  ComplexNumber(6, 9),   ComplexNumber(0, 0)      ]
@@ -112,6 +113,7 @@ for a,b in zip(az, bz):
 
 # But this does not prove the equation true, you say.
 # Well, what if we try for 10000 different randomly generated examples?
+
 print "\nRandomly generated examples:"
 from random import randint
 for _ in xrange(10000):
@@ -269,7 +271,6 @@ class NegatedVariable(Variable):
 
   def __ne__(left, right):
     return not (left == right)
-
 
 print "\nGeneral evaluation:"
 a = ComplexNumber(Variable(), Variable())

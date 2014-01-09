@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Rendering markdown to html..."
+pandoc proof.md -c pandoc.css -o proof.html
+
+echo "Converting markdown to python..."
+python convert.py
