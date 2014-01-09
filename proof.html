@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="./pandoc.css" type="text/css" />
+</head>
+<body>
+<p>We will set out to prove the equation (a - b)* = a* - b<em> where </em> means complex conjugate.</p>
+<p>As a refresher, a complex conjugate of a complex number is the number which is the same but for a negated imaginary component. For examples, the complex conjugate of 4 + 3i is 4 - 3i.</p>
+<p>We will do this by exploring through programming. First, we will tell python what a complex number is by creating a class to store the real and imaginary components and teach it how to manipulate the numbers in such ways as addition and subtraction by using methods on the complex number class.</p>
+<p>Python actually has support for complex numbers built in. This is fantastic, but we are not going to use its built in support. The reason is two-fold. First, it is fun to see the inner workings of the complex number class. Secondly, writing our own will make it easier to debug, understand, and ensure the validity of the funny business we will be doing later, which will involve shoveling things that are not quite numbers through the complex number class machinery.</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> ComplexNumber(<span class="dt">object</span>):
+  <span class="co">&quot;&quot;&quot;</span>
+<span class="co">  Class for manipulating complex numbers.</span>
+
+<span class="co">  This example is limited to things which might be useful for the</span>
+<span class="co">  exercise and thus does not include multiplication or division.</span>
+<span class="co">  &quot;&quot;&quot;</span>
+
+  <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, real, imag):
+    <span class="co">&quot;&quot;&quot; Complex numbers have a real and imaginary part. &quot;&quot;&quot;</span>
+    <span class="ot">self</span>.real = real
+    <span class="ot">self</span>.imag = imag
+
+  <span class="kw">def</span> conj(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot; Complex conjugate of the number. &quot;&quot;&quot;</span>
+    <span class="kw">return</span> ComplexNumber(<span class="ot">self</span>.real, -<span class="ot">self</span>.imag)
+
+  <span class="kw">def</span> <span class="ot">__add__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; Addition operator: x + y &quot;&quot;&quot;</span>
+    <span class="kw">return</span> ComplexNumber(left.real + right.real, left.imag + right.imag)
+
+  <span class="kw">def</span> <span class="ot">__sub__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; Subtraction operator: x - y &quot;&quot;&quot;</span>
+    <span class="kw">return</span> left + (-right)
+
+  <span class="kw">def</span> <span class="ot">__pos__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot; Unary plus operator: (+x) &quot;&quot;&quot;</span>
+    <span class="kw">return</span> <span class="ot">self</span>
+
+  <span class="kw">def</span> <span class="ot">__neg__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot; Unary minus operator: -x &quot;&quot;&quot;</span>
+    <span class="kw">return</span> ComplexNumber(-<span class="ot">self</span>.real, -<span class="ot">self</span>.imag)
+
+  <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; Equality testing: x == y &quot;&quot;&quot;</span>
+    <span class="kw">return</span> (left.real == right.real) and (left.imag == right.imag)
+
+  <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; Inequality testing: x != y &quot;&quot;&quot;</span>
+    <span class="kw">return</span> not left == right
+
+  <span class="kw">def</span> <span class="ot">__repr__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    This tells python how to represent ComplexNumber&#39;s as strings.</span>
+<span class="co">    This way, when we print a ComplexNumber, it shows something</span>
+<span class="co">    nice like &quot;8 + 3i&quot;</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">return</span> <span class="st">&quot;{} + {}i&quot;</span>.<span class="dt">format</span>(<span class="ot">self</span>.real, <span class="ot">self</span>.imag)</code></pre>
+<p>Now that we have our complex number class, let's test it out on a few examples.</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Complex number examples:&quot;</span>
+x = ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>)
+y = ComplexNumber(<span class="dv">3</span>, <span class="dv">2</span>)
+<span class="dt">print</span> x                        <span class="co"># -&gt; 8 + 5i</span>
+<span class="dt">print</span> y                        <span class="co"># -&gt; 3 + 2i</span>
+<span class="dt">print</span> -x                       <span class="co"># -&gt; -8 + -5i</span>
+<span class="dt">print</span> x + y                    <span class="co"># -&gt; 11 + 7i</span>
+<span class="dt">print</span> x - y                    <span class="co"># -&gt; 5 + 3i</span>
+<span class="dt">print</span> -y + x                   <span class="co"># -&gt; 5 + 3i</span>
+<span class="dt">print</span> x == y                   <span class="co"># -&gt; False</span>
+<span class="dt">print</span> x == ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>) <span class="co"># -&gt; True</span>
+<span class="dt">print</span> x.conj()                 <span class="co"># -&gt; 8 + -5i</span></code></pre>
+<p>Looks good so far. The printing for negative imaginary components is a little funky, but it's readable enough.</p>
+<p>Now let's try the equation in question with a few examples. (a - b)* = a* - b*</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Equation example:&quot;</span>
+a = ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>)
+b = ComplexNumber(<span class="dv">3</span>, <span class="dv">2</span>)
+<span class="dt">print</span> (a - b).conj()                        <span class="co"># -&gt; 5 + -3i</span>
+<span class="dt">print</span> a.conj() - b.conj()                   <span class="co"># -&gt; 5 + -3i</span>
+<span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True</span></code></pre>
+<p>Great, it looks like the equation holds for those values. How about a few more?</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">More equation examples:&quot;</span>
+az = [ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>),  ComplexNumber(-<span class="dv">2</span>, <span class="dv">3</span>), ComplexNumber(-<span class="dv">9</span>, -<span class="dv">3</span>), ComplexNumber(<span class="dv">1027</span>, -<span class="dv">304</span>)]
+bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), ComplexNumber(<span class="dv">8</span>, <span class="dv">4</span>),  ComplexNumber(<span class="dv">6</span>, <span class="dv">9</span>),   ComplexNumber(<span class="dv">0</span>, <span class="dv">0</span>)      ]
+<span class="kw">for</span> a,b in <span class="dt">zip</span>(az, bz):
+  <span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True every time!</span></code></pre>
+<p>But this does not prove the equation true, you say. Well, what if we try for 10000 different randomly generated examples?</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Randomly generated examples:&quot;</span>
+<span class="ch">from</span> random <span class="ch">import</span> randint
+<span class="kw">for</span> _ in <span class="dt">xrange</span>(<span class="dv">10000</span>):
+  a = ComplexNumber(randint(-<span class="dv">1000</span>, <span class="dv">1000</span>), randint(-<span class="dv">1000</span>, <span class="dv">1000</span>))
+  b = ComplexNumber(randint(-<span class="dv">1000</span>, <span class="dv">1000</span>), randint(-<span class="dv">1000</span>, <span class="dv">1000</span>))
+  truth = (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; ... True</span>
+  <span class="kw">if</span> not truth:
+    <span class="dt">print</span> <span class="st">&quot;It was false!&quot;</span>
+<span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">If nothing to the contrary is printed above, then all the examples checked out.&quot;</span></code></pre>
+<p>Those all worked! At least for me. You can give it a shot if you want. The equation seems to hold up. It seems very unlikely for there to be holes in the coverage of this equation. Is that good enough? No? Ok. Well let's try to show it more generally then.</p>
+<p>In order to prove the equation generally, we will have to stop plugging in actual complex numbers. Every time we plug in an actual complex number, we doom ourselves to a loss of generality. But does that mean that all of our hard work in creating the machinery of the ComplexNumber class will go to waste? Certainly not.</p>
+<p>We will now create a class to represent something that is not quite a number. It will behave a lot like a number, but without every having an actual value. We will call such nebulous artifacts &quot;variables&quot; for now. I'm not sure that is quite the right word, you can decide for yourself.</p>
+<p>TODO explain uniqueness. TODO note &quot;immature method of dealing&quot; with possible equality, crashing.</p>
+<p>We will put Variables inside ComplexNumbers as real and imaginary components. So Variables will need to be able to do everything that a number does.</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Variable(<span class="dt">object</span>):
+  <span class="co">&quot;&quot;&quot;</span>
+<span class="co">  Variables are like numbers, but they have no value.</span>
+
+<span class="co">  Variables must be able to do everything that numbers can do.</span>
+
+<span class="co">  Each Variable we create will have its own unique identity.</span>
+<span class="co">  It will be distinctly differentiable from every other Variable</span>
+<span class="co">  that exists. However, we must make this so WITHOUT assigning</span>
+<span class="co">  a value to the variable.</span>
+<span class="co">  &quot;&quot;&quot;</span>
+
+  <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    Variables have an empty constructor because they do not</span>
+<span class="co">    have any value to remember.</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">pass</span>
+
+  <span class="kw">def</span> <span class="ot">__add__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; The sum of two variables is an object representing just that. &quot;&quot;&quot;</span>
+    <span class="kw">return</span> VariableSum(left, right)
+
+  <span class="kw">def</span> <span class="ot">__sub__</span>(left, right):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    The difference of two variables is just the sum where the right one is negated.</span>
+<span class="co">    (a - b) = (a + (-b))</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">return</span> VariableSum(left, -right)
+
+  <span class="kw">def</span> <span class="ot">__pos__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot; +v is the same as v &quot;&quot;&quot;</span>
+    <span class="kw">return</span> <span class="ot">self</span>
+
+  <span class="kw">def</span> <span class="ot">__neg__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot; -v is the negated version of the variable v &quot;&quot;&quot;</span>
+    <span class="kw">return</span> NegatedVariable(<span class="ot">self</span>)
+
+  <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
+    <span class="co"># TODO figure this out.</span>
+    <span class="kw">if</span> <span class="dt">isinstance</span>(right, NegatedVariable):
+      <span class="co"># The right variable is negated, but the left is not.</span>
+      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Is a variable equal to another variables negative? What about it&#39;s own negative?&quot;</span>)
+    <span class="kw">else</span>:
+      <span class="co"># Both variables are non-negated.</span>
+      <span class="kw">return</span> left is right
+
+  <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
+    <span class="kw">return</span> not (left == right)</code></pre>
+<p>Whew, that's pretty weird. We seem to have referenced a bunch of classes in the methods of Variable which do not exist yet. Let's go ahead and create those classes.</p>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> VariableSum(<span class="dt">object</span>):
+  <span class="co">&quot;&quot;&quot; A VariableSum represents the result of adding two Variables &quot;&quot;&quot;</span>
+
+  <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, left, right):
+    <span class="co">&quot;&quot;&quot; A variable sum stores the left and right elements in the addition &quot;&quot;&quot;</span>
+    <span class="ot">self</span>.left = left
+    <span class="ot">self</span>.right = right
+
+  <span class="kw">def</span> <span class="ot">__neg__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    To negate a sum like -(x + y),</span>
+<span class="co">    just negate it&#39;s parts  (-x + -y)</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">return</span> VariableSum(-<span class="ot">self</span>.left, -<span class="ot">self</span>.right)
+
+  <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
+    <span class="co">&quot;&quot;&quot; Check whether a sum of variables is the same as another sum of variables. &quot;&quot;&quot;</span>
+    <span class="co"># Yes, this line is confusing.</span>
+    <span class="kw">if</span> left.left == right.left and left.right == right.right:
+      <span class="kw">return</span> <span class="ot">True</span>
+    <span class="kw">else</span>:
+      <span class="co"># Yeah, there are other ways that sums could be equal.</span>
+      <span class="co"># For example, (a + b) = (b + a)</span>
+      <span class="co"># I think we should just crash.</span>
+      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.&quot;</span>)
+
+  <span class="kw">def</span> __neq__(left, right):
+    <span class="co">&quot;&quot;&quot; Check whether a sum of variables is NOT the same as another sum of variables. &quot;&quot;&quot;</span>
+    <span class="kw">if</span> left.left == right.left and left.right == right.right:
+      <span class="kw">return</span> <span class="ot">False</span>
+    <span class="kw">else</span>:
+      <span class="co"># Yeah, there are other ways that sums could be equal.</span>
+      <span class="co"># For example, (a + b) = (b + a)</span>
+      <span class="co"># I think we should just crash.</span>
+      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.&quot;</span>)</code></pre>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> NegatedVariable(Variable):
+  <span class="co">&quot;&quot;&quot;</span>
+<span class="co">  Notice that Variable appears above instead of object.</span>
+<span class="co">  This denotes that a NegatedVariable is really a kind of Variable.</span>
+<span class="co">  Technically, NegatedVariable inherits all of the methods of</span>
+<span class="co">  from Variable. So NegatedVariables know how to do all the same tricks,</span>
+<span class="co">  like participating in addition and stuff.</span>
+
+<span class="co">  The exception is negation. NegatedVariable has its own special definition</span>
+<span class="co">  of negation, which you will see below.</span>
+<span class="co">  &quot;&quot;&quot;</span>
+  <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, variable):
+    <span class="ot">self</span>.variable = variable
+
+  <span class="kw">def</span> <span class="ot">__neg__</span>(<span class="ot">self</span>):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    A twice negated variable is just the original variable.</span>
+<span class="co">    -(-v) = v</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">return</span> <span class="ot">self</span>.variable
+
+  <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
+    <span class="co"># TODO figure this out.</span>
+    <span class="kw">if</span> <span class="dt">isinstance</span>(right, NegatedVariable):
+      <span class="co"># Both variables are negated.</span>
+      <span class="kw">return</span> -left == -right
+    <span class="kw">else</span>:
+      <span class="co"># The left variable is negated, but the right is not.</span>
+      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Is a variable equal to another variables negative? What about it&#39;s own negative?&quot;</span>)
+
+  <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
+    <span class="kw">return</span> not (left == right)</code></pre>
+<pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">General evaluation:&quot;</span>
+a = ComplexNumber(Variable(), Variable())
+b = ComplexNumber(Variable(), Variable())
+<span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True</span></code></pre>
+<p>TODO conclude</p>
+</body>
+</html>
