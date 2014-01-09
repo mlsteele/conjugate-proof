@@ -25,6 +25,9 @@
 # later, which will involve shoveling things that are not quite
 # numbers through the complex number class machinery.
 
+# You can grab a copy of the [python source](proof.py) for this at any point, or
+# clone the [github repository](http://github.com/mlsteele/conjugate-proof)..
+
 class ComplexNumber(object):
   """
   Class for manipulating complex numbers.
