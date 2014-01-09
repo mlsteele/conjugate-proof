@@ -28,8 +28,18 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="pandoc.css" type="text/css" />
 </head>
 <body>
-<p>We will set out to prove the equation (a - b)* = a* - b<em> where </em> means complex conjugate.</p>
-<p>As a refresher, a complex conjugate of a complex number is the number which is the same but for a negated imaginary component. For examples, the complex conjugate of 4 + 3i is 4 - 3i.</p>
+<div id="TOC">
+<ul>
+<li><a href="#conjugate-proof">Conjugate Proof</a><ul>
+<li><a href="#numerical-tests">Numerical Tests</a></li>
+<li><a href="#a-general-approach">A General Approach</a></li>
+<li><a href="#final-test">Final Test</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="conjugate-proof"><a href="#conjugate-proof">Conjugate Proof</a></h1>
+<p>We will set out to prove the equation<br /> <code>(a - b)* = a* - b*</code><br />where <code>*</code> means complex conjugate.</p>
+<p>As a refresher, a complex conjugate of a complex number is the number which is the same but for a negated imaginary component. For examples, the complex conjugate of <code>4 + 3i</code> is <code>4 - 3i</code>.</p>
 <p>We will do this by exploring through programming. First, we will tell python what a complex number is by creating a class to store the real and imaginary components and teach it how to manipulate the numbers in such ways as addition and subtraction by using methods on the complex number class.</p>
 <p>Python actually has support for complex numbers built in. This is fantastic, but we are not going to use its built in support. The reason is two-fold. First, it is fun to see the inner workings of the complex number class. Secondly, writing our own will make it easier to debug, understand, and ensure the validity of the funny business we will be doing later, which will involve shoveling things that are not quite numbers through the complex number class machinery.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> ComplexNumber(<span class="dt">object</span>):
@@ -80,6 +90,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <span class="co">    nice like &quot;8 + 3i&quot;</span>
 <span class="co">    &quot;&quot;&quot;</span>
     <span class="kw">return</span> <span class="st">&quot;{} + {}i&quot;</span>.<span class="dt">format</span>(<span class="ot">self</span>.real, <span class="ot">self</span>.imag)</code></pre>
+<h2 id="numerical-tests"><a href="#numerical-tests">Numerical Tests</a></h2>
 <p>Now that we have our complex number class, let's test it out on a few examples.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Complex number examples:&quot;</span>
 x = ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>)
@@ -94,17 +105,21 @@ y = ComplexNumber(<span class="dv">3</span>, <span class="dv">2</span>)
 <span class="dt">print</span> x == ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>) <span class="co"># -&gt; True</span>
 <span class="dt">print</span> x.conj()                 <span class="co"># -&gt; 8 + -5i</span></code></pre>
 <p>Looks good so far. The printing for negative imaginary components is a little funky, but it's readable enough.</p>
-<p>Now let's try the equation in question with a few examples. (a - b)* = a* - b*</p>
+<p>Now let's try the equation in question with a few examples. Remember, the equation we're testing is <code>(a - b)* = a* - b*</code>.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Equation example:&quot;</span>
 a = ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>)
 b = ComplexNumber(<span class="dv">3</span>, <span class="dv">2</span>)
+<span class="co"># left side of the equation</span>
 <span class="dt">print</span> (a - b).conj()                        <span class="co"># -&gt; 5 + -3i</span>
+<span class="co"># right side of the equation</span>
 <span class="dt">print</span> a.conj() - b.conj()                   <span class="co"># -&gt; 5 + -3i</span>
 <span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True</span></code></pre>
 <p>Great, it looks like the equation holds for those values. How about a few more?</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">More equation examples:&quot;</span>
-az = [ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>),  ComplexNumber(-<span class="dv">2</span>, <span class="dv">3</span>), ComplexNumber(-<span class="dv">9</span>, -<span class="dv">3</span>), ComplexNumber(<span class="dv">1027</span>, -<span class="dv">304</span>)]
-bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), ComplexNumber(<span class="dv">8</span>, <span class="dv">4</span>),  ComplexNumber(<span class="dv">6</span>, <span class="dv">9</span>),   ComplexNumber(<span class="dv">0</span>, <span class="dv">0</span>)      ]
+az = [ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>),  ComplexNumber(-<span class="dv">2</span>, <span class="dv">3</span>),
+      ComplexNumber(-<span class="dv">9</span>, -<span class="dv">3</span>), ComplexNumber(<span class="dv">1027</span>, -<span class="dv">304</span>) ]
+bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), ComplexNumber(<span class="dv">8</span>, <span class="dv">4</span>),
+      ComplexNumber(<span class="dv">6</span>, <span class="dv">9</span>),   ComplexNumber(<span class="dv">0</span>, <span class="dv">0</span>) ]
 <span class="kw">for</span> a,b in <span class="dt">zip</span>(az, bz):
   <span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True every time!</span></code></pre>
 <p>But this does not prove the equation true, you say. Well, what if we try for 10000 different randomly generated examples?</p>
@@ -116,22 +131,21 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
   truth = (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; ... True</span>
   <span class="kw">if</span> not truth:
     <span class="dt">print</span> <span class="st">&quot;It was false!&quot;</span>
-<span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">If nothing to the contrary is printed above, then all the examples checked out.&quot;</span></code></pre>
-<p>Those all worked! At least for me. You can give it a shot if you want. The equation seems to hold up. It seems very unlikely for there to be holes in the coverage of this equation. Is that good enough? No? Ok. Well let's try to show it more generally then.</p>
+<span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">If nothing to the contrary is printed above,&quot;</span>\
+      + <span class="st">&quot;then all the examples checked out.&quot;</span></code></pre>
+<p>Those all worked! At least for me. You can give it a shot if you want. The equation seems to hold up. It seems very unlikely for there to be holes in the coverage of this equation. Is that good enough?<br />No?<br />Ok. Well let's try to show it more generally then.</p>
+<h2 id="a-general-approach"><a href="#a-general-approach">A General Approach</a></h2>
 <p>In order to prove the equation generally, we will have to stop plugging in actual complex numbers. Every time we plug in an actual complex number, we doom ourselves to a loss of generality. But does that mean that all of our hard work in creating the machinery of the ComplexNumber class will go to waste? Certainly not.</p>
 <p>We will now create a class to represent something that is not quite a number. It will behave a lot like a number, but without every having an actual value. We will call such nebulous artifacts &quot;variables&quot; for now. I'm not sure that is quite the right word, you can decide for yourself.</p>
-<p>TODO explain uniqueness. TODO note &quot;immature method of dealing&quot; with possible equality, crashing.</p>
 <p>We will put Variables inside ComplexNumbers as real and imaginary components. So Variables will need to be able to do everything that a number does.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> Variable(<span class="dt">object</span>):
   <span class="co">&quot;&quot;&quot;</span>
 <span class="co">  Variables are like numbers, but they have no value.</span>
-
 <span class="co">  Variables must be able to do everything that numbers can do.</span>
 
 <span class="co">  Each Variable we create will have its own unique identity.</span>
-<span class="co">  It will be distinctly differentiable from every other Variable</span>
-<span class="co">  that exists. However, we must make this so WITHOUT assigning</span>
-<span class="co">  a value to the variable.</span>
+<span class="co">  It will be distinct from every other Variable that exists.</span>
+<span class="co">  However, we must make this so WITHOUT assigning a value to the variable.</span>
 <span class="co">  &quot;&quot;&quot;</span>
 
   <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>):
@@ -161,12 +175,32 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
     <span class="kw">return</span> NegatedVariable(<span class="ot">self</span>)
 
   <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
-    <span class="co"># TODO figure this out.</span>
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    How should we determine whether two variables are equal?</span>
+
+<span class="co">    Well first off, the simple case, if both the left and right sides</span>
+<span class="co">    of our comparison are the same variable then they should be equal.</span>
+<span class="co">    However, if the left and right are different variables, they could,</span>
+<span class="co">    in some world, have the same value. So it wouldn&#39;t be quite fair</span>
+<span class="co">    to return False for such a comparison. For this sort of ambiguous</span>
+<span class="co">    answer, we will just throw an exception and hope this never happens</span>
+<span class="co">    in our proof.</span>
+
+<span class="co">    Another complication when we run across a comparison between a variable</span>
+<span class="co">    and the negated form of some variable. These could have the same value,</span>
+<span class="co">    but we can&#39;t be sure, even if they are the positive and negated form of</span>
+<span class="co">    the same variable. So, here we will throw an exception as well.</span>
+<span class="co">    &quot;&quot;&quot;</span>
     <span class="kw">if</span> <span class="dt">isinstance</span>(right, NegatedVariable):
       <span class="co"># The right variable is negated, but the left is not.</span>
-      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Is a variable equal to another variables negative? What about it&#39;s own negative?&quot;</span>)
+      <span class="co"># This is an ambiguous comparison.</span>
+      <span class="co"># The values of the variables could be equal, but there is no way</span>
+      <span class="co"># for us to answer definitively with a True or False</span>
+      <span class="kw">raise</span> <span class="ot">RuntimeError</span>(<span class="st">&quot;Ambiguous Equality&quot;</span>)
     <span class="kw">else</span>:
       <span class="co"># Both variables are non-negated.</span>
+      <span class="co"># The &quot;is&quot; comparison tests whether the left and right sides</span>
+      <span class="co"># are the same instance of the variable class.</span>
       <span class="kw">return</span> left is right
 
   <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
@@ -193,32 +227,31 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
     <span class="kw">if</span> left.left == right.left and left.right == right.right:
       <span class="kw">return</span> <span class="ot">True</span>
     <span class="kw">else</span>:
-      <span class="co"># Yeah, there are other ways that sums could be equal.</span>
+      <span class="co"># There are other ways that sums could be equal.</span>
       <span class="co"># For example, (a + b) = (b + a)</span>
-      <span class="co"># I think we should just crash.</span>
-      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.&quot;</span>)
+      <span class="co"># We are not going to implement every equality comparison, so instead</span>
+      <span class="co"># we will throw a NotImplementedError to indicate the if you wanted</span>
+      <span class="co"># to use a comparison that currently throws an error in your proof,</span>
+      <span class="co"># then you might consider writing more code here.</span>
+      <span class="kw">raise</span> <span class="ot">NotImplementedError</span>(<span class="st">&quot;Comparison not fully implemented.&quot;</span>)
 
   <span class="kw">def</span> __neq__(left, right):
-    <span class="co">&quot;&quot;&quot; Check whether a sum of variables is NOT the same as another sum of variables. &quot;&quot;&quot;</span>
-    <span class="kw">if</span> left.left == right.left and left.right == right.right:
-      <span class="kw">return</span> <span class="ot">False</span>
-    <span class="kw">else</span>:
-      <span class="co"># Yeah, there are other ways that sums could be equal.</span>
-      <span class="co"># For example, (a + b) = (b + a)</span>
-      <span class="co"># I think we should just crash.</span>
-      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.&quot;</span>)</code></pre>
+    <span class="kw">return</span> not (left == right)</code></pre>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="kw">class</span> NegatedVariable(Variable):
   <span class="co">&quot;&quot;&quot;</span>
-<span class="co">  Notice that Variable appears above instead of object.</span>
+<span class="co">  Notice that Variable appears inside instead of object.</span>
 <span class="co">  This denotes that a NegatedVariable is really a kind of Variable.</span>
 <span class="co">  Technically, NegatedVariable inherits all of the methods of</span>
-<span class="co">  from Variable. So NegatedVariables know how to do all the same tricks,</span>
-<span class="co">  like participating in addition and stuff.</span>
+<span class="co">  from the Variable class. So NegatedVariables know how to do all</span>
+<span class="co">  the same tricks, like participating in addition and subtraction.</span>
 
-<span class="co">  The exception is negation. NegatedVariable has its own special definition</span>
+<span class="co">  The exception is negation of a NegatedVariable.</span>
+<span class="co">  NegatedVariable has its own special definition</span>
 <span class="co">  of negation, which you will see below.</span>
 <span class="co">  &quot;&quot;&quot;</span>
+
   <span class="kw">def</span> <span class="ot">__init__</span>(<span class="ot">self</span>, variable):
+    <span class="co">&quot;&quot;&quot; A NegatedVariable must remember what it is the negation of. &quot;&quot;&quot;</span>
     <span class="ot">self</span>.variable = variable
 
   <span class="kw">def</span> <span class="ot">__neg__</span>(<span class="ot">self</span>):
@@ -229,20 +262,26 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
     <span class="kw">return</span> <span class="ot">self</span>.variable
 
   <span class="kw">def</span> <span class="ot">__eq__</span>(left, right):
-    <span class="co"># TODO figure this out.</span>
     <span class="kw">if</span> <span class="dt">isinstance</span>(right, NegatedVariable):
       <span class="co"># Both variables are negated.</span>
       <span class="kw">return</span> -left == -right
     <span class="kw">else</span>:
       <span class="co"># The left variable is negated, but the right is not.</span>
-      <span class="kw">raise</span> <span class="ot">Exception</span>(<span class="st">&quot;Is a variable equal to another variables negative? What about it&#39;s own negative?&quot;</span>)
+      <span class="co"># This is an ambiguous comparison.</span>
+      <span class="co"># The values of the variables could be equal, but there is no way</span>
+      <span class="co"># for us to answer definitively with a True or False</span>
+      <span class="kw">raise</span> <span class="ot">RuntimeError</span>(<span class="st">&quot;Ambiguous Equality&quot;</span>)
 
   <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
     <span class="kw">return</span> not (left == right)</code></pre>
+<h2 id="final-test"><a href="#final-test">Final Test</a></h2>
+<p>Now that all of the pieces are in place we should be able to test whether <code>(a - b)*</code> really does equal <code>a* - b*</code>.</p>
+<p>We will compose the complex numbers <code>a</code> and <code>b</code> from two variables each. One for the real component, and another for the imaginary component.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">General evaluation:&quot;</span>
 a = ComplexNumber(Variable(), Variable())
 b = ComplexNumber(Variable(), Variable())
-<span class="dt">print</span> (a - b).conj() == a.conj() - b.conj() <span class="co"># -&gt; True</span></code></pre>
-<p>TODO conclude</p>
+<span class="dt">print</span> (a - b).conj() == a.conj() - b.conj()  <span class="co"># -&gt; True</span></code></pre>
+<p>It's true! We have shown that <code>(a - b)* = a* - b*</code>. But don't take my word for it, you can run this program, here is the <a href="proof.py">python version</a>.</p>
+<p>That's assuming there were no bugs in the program. Did you see any bugs? Fix them or play with <a href="http://github.com/mlsteele/conjugate-proof">the code on github</a>.</p>
 </body>
 </html>

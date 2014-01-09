@@ -1,11 +1,13 @@
-We will set out to prove the equation
-  (a - b)* = a* - b*
-where * means complex conjugate.
+# Conjugate Proof
+
+We will set out to prove the equation\
+  `(a - b)* = a* - b*`\
+where `*` means complex conjugate.
 
 As a refresher, a complex conjugate of a complex number
 is the number which is the same but for a negated imaginary
-component. For examples, the complex conjugate of 4 + 3i
-is 4 - 3i.
+component. For examples, the complex conjugate of `4 + 3i`
+is `4 - 3i`.
 
 We will do this by exploring through programming.
 First, we will tell python what a complex number is
@@ -74,6 +76,8 @@ class ComplexNumber(object):
     return "{} + {}i".format(self.real, self.imag)
 ```
 
+## Numerical Tests
+
 Now that we have our complex number class,
 let's test it out on a few examples.
 
@@ -97,13 +101,15 @@ The printing for negative imaginary components is a little funky,
 but it's readable enough.
 
 Now let's try the equation in question with a few examples.
-(a - b)* = a* - b*
+Remember, the equation we're testing is `(a - b)* = a* - b*`.
 
 ``` python
 print "\nEquation example:"
 a = ComplexNumber(8, 5)
 b = ComplexNumber(3, 2)
+# left side of the equation
 print (a - b).conj()                        # -> 5 + -3i
+# right side of the equation
 print a.conj() - b.conj()                   # -> 5 + -3i
 print (a - b).conj() == a.conj() - b.conj() # -> True
 ```
@@ -113,8 +119,10 @@ How about a few more?
 
 ``` python
 print "\nMore equation examples:"
-az = [ComplexNumber(8, 5),  ComplexNumber(-2, 3), ComplexNumber(-9, -3), ComplexNumber(1027, -304)]
-bz = [ComplexNumber(9, -2), ComplexNumber(8, 4),  ComplexNumber(6, 9),   ComplexNumber(0, 0)      ]
+az = [ComplexNumber(8, 5),  ComplexNumber(-2, 3),
+      ComplexNumber(-9, -3), ComplexNumber(1027, -304) ]
+bz = [ComplexNumber(9, -2), ComplexNumber(8, 4),
+      ComplexNumber(6, 9),   ComplexNumber(0, 0) ]
 for a,b in zip(az, bz):
   print (a - b).conj() == a.conj() - b.conj() # -> True every time!
 ```
@@ -131,15 +139,18 @@ for _ in xrange(10000):
   truth = (a - b).conj() == a.conj() - b.conj() # -> ... True
   if not truth:
     print "It was false!"
-print "\nIf nothing to the contrary is printed above, then all the examples checked out."
+print "\nIf nothing to the contrary is printed above,"\
+      + "then all the examples checked out."
 ```
 
 Those all worked! At least for me. You can give it a shot if you want.
 The equation seems to hold up.
 It seems very unlikely for there to be holes in the coverage of this equation.
-Is that good enough?
-No?
+Is that good enough?\
+No?\
 Ok. Well let's try to show it more generally then.
+
+## A General Approach
 
 In order to prove the equation generally,
 we will have to stop plugging in actual complex numbers.
@@ -153,9 +164,6 @@ It will behave a lot like a number, but without every having an actual value.
 We will call such nebulous artifacts "variables" for now. I'm not sure that is
 quite the right word, you can decide for yourself.
 
-TODO explain uniqueness.
-TODO note "immature method of dealing" with possible equality, crashing.
-
 We will put Variables inside ComplexNumbers as real and imaginary components.
 So Variables will need to be able to do everything that a number does.
 
@@ -163,13 +171,11 @@ So Variables will need to be able to do everything that a number does.
 class Variable(object):
   """
   Variables are like numbers, but they have no value.
-
   Variables must be able to do everything that numbers can do.
 
   Each Variable we create will have its own unique identity.
-  It will be distinctly differentiable from every other Variable
-  that exists. However, we must make this so WITHOUT assigning
-  a value to the variable.
+  It will be distinct from every other Variable that exists.
+  However, we must make this so WITHOUT assigning a value to the variable.
   """
 
   def __init__(self):
@@ -199,12 +205,32 @@ class Variable(object):
     return NegatedVariable(self)
 
   def __eq__(left, right):
-    # TODO figure this out.
+    """
+    How should we determine whether two variables are equal?
+
+    Well first off, the simple case, if both the left and right sides
+    of our comparison are the same variable then they should be equal.
+    However, if the left and right are different variables, they could,
+    in some world, have the same value. So it wouldn't be quite fair
+    to return False for such a comparison. For this sort of ambiguous
+    answer, we will just throw an exception and hope this never happens
+    in our proof.
+
+    Another complication when we run across a comparison between a variable
+    and the negated form of some variable. These could have the same value,
+    but we can't be sure, even if they are the positive and negated form of
+    the same variable. So, here we will throw an exception as well.
+    """
     if isinstance(right, NegatedVariable):
       # The right variable is negated, but the left is not.
-      raise Exception("Is a variable equal to another variables negative? What about it's own negative?")
+      # This is an ambiguous comparison.
+      # The values of the variables could be equal, but there is no way
+      # for us to answer definitively with a True or False
+      raise RuntimeError("Ambiguous Equality")
     else:
       # Both variables are non-negated.
+      # The "is" comparison tests whether the left and right sides
+      # are the same instance of the variable class.
       return left is right
 
   def __ne__(left, right):
@@ -237,35 +263,34 @@ class VariableSum(object):
     if left.left == right.left and left.right == right.right:
       return True
     else:
-      # Yeah, there are other ways that sums could be equal.
+      # There are other ways that sums could be equal.
       # For example, (a + b) = (b + a)
-      # I think we should just crash.
-      raise Exception("Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.")
+      # We are not going to implement every equality comparison, so instead
+      # we will throw a NotImplementedError to indicate the if you wanted
+      # to use a comparison that currently throws an error in your proof,
+      # then you might consider writing more code here.
+      raise NotImplementedError("Comparison not fully implemented.")
 
   def __neq__(left, right):
-    """ Check whether a sum of variables is NOT the same as another sum of variables. """
-    if left.left == right.left and left.right == right.right:
-      return False
-    else:
-      # Yeah, there are other ways that sums could be equal.
-      # For example, (a + b) = (b + a)
-      # I think we should just crash.
-      raise Exception("Sums could be equal, not sure. If you want to use this comparison in a proof then write more code.")
+    return not (left == right)
 ```
 
 ``` python
 class NegatedVariable(Variable):
   """
-  Notice that Variable appears above instead of object.
+  Notice that Variable appears inside instead of object.
   This denotes that a NegatedVariable is really a kind of Variable.
   Technically, NegatedVariable inherits all of the methods of
-  from Variable. So NegatedVariables know how to do all the same tricks,
-  like participating in addition and stuff.
+  from the Variable class. So NegatedVariables know how to do all
+  the same tricks, like participating in addition and subtraction.
 
-  The exception is negation. NegatedVariable has its own special definition
+  The exception is negation of a NegatedVariable.
+  NegatedVariable has its own special definition
   of negation, which you will see below.
   """
+
   def __init__(self, variable):
+    """ A NegatedVariable must remember what it is the negation of. """
     self.variable = variable
 
   def __neg__(self):
@@ -276,23 +301,42 @@ class NegatedVariable(Variable):
     return self.variable
 
   def __eq__(left, right):
-    # TODO figure this out.
     if isinstance(right, NegatedVariable):
       # Both variables are negated.
       return -left == -right
     else:
       # The left variable is negated, but the right is not.
-      raise Exception("Is a variable equal to another variables negative? What about it's own negative?")
+      # This is an ambiguous comparison.
+      # The values of the variables could be equal, but there is no way
+      # for us to answer definitively with a True or False
+      raise RuntimeError("Ambiguous Equality")
 
   def __ne__(left, right):
     return not (left == right)
 ```
 
+## Final Test
+
+Now that all of the pieces are in place we should
+be able to test whether `(a - b)*` really does equal
+`a* - b*`.
+
+We will compose the complex numbers `a` and `b` from two
+variables each. One for the real component,
+and another for the imaginary component.
+
 ``` python
 print "\nGeneral evaluation:"
 a = ComplexNumber(Variable(), Variable())
 b = ComplexNumber(Variable(), Variable())
-print (a - b).conj() == a.conj() - b.conj() # -> True
+print (a - b).conj() == a.conj() - b.conj()  # -> True
 ```
 
-TODO conclude
+It's true!
+We have shown that `(a - b)* = a* - b*`.
+But don't take my word for it, you can run this program,
+here is the [python version](proof.py).
+
+That's assuming there were no bugs in the program.
+Did you see any bugs? Fix them or play with [the
+code on github](http://github.com/mlsteele/conjugate-proof).
