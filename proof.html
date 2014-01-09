@@ -28,16 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="pandoc.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
-<ul>
-<li><a href="#conjugate-proof">Conjugate Proof</a><ul>
-<li><a href="#numerical-tests">Numerical Tests</a></li>
-<li><a href="#a-general-approach">A General Approach</a></li>
-<li><a href="#final-test">Final Test</a></li>
-</ul></li>
-</ul>
-</div>
-<h1 id="conjugate-proof"><a href="#conjugate-proof">Conjugate Proof</a></h1>
+<h1 id="conjugate-proof">Conjugate Proof</h1>
 <p>We will set out to prove the equation<br /> <code>(a - b)* = a* - b*</code><br />where <code>*</code> means complex conjugate.</p>
 <p>As a refresher, a complex conjugate of a complex number is the number which is the same but for a negated imaginary component. For examples, the complex conjugate of <code>4 + 3i</code> is <code>4 - 3i</code>.</p>
 <p>We will do this by exploring through programming. First, we will tell python what a complex number is by creating a class to store the real and imaginary components and teach it how to manipulate the numbers in such ways as addition and subtraction by using methods on the complex number class.</p>
@@ -90,7 +81,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <span class="co">    nice like &quot;8 + 3i&quot;</span>
 <span class="co">    &quot;&quot;&quot;</span>
     <span class="kw">return</span> <span class="st">&quot;{} + {}i&quot;</span>.<span class="dt">format</span>(<span class="ot">self</span>.real, <span class="ot">self</span>.imag)</code></pre>
-<h2 id="numerical-tests"><a href="#numerical-tests">Numerical Tests</a></h2>
+<h2 id="numerical-tests">Numerical Tests</h2>
 <p>Now that we have our complex number class, let's test it out on a few examples.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">Complex number examples:&quot;</span>
 x = ComplexNumber(<span class="dv">8</span>, <span class="dv">5</span>)
@@ -134,7 +125,7 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
 <span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">If nothing to the contrary is printed above,&quot;</span>\
       + <span class="st">&quot;then all the examples checked out.&quot;</span></code></pre>
 <p>Those all worked! At least for me. You can give it a shot if you want. The equation seems to hold up. It seems very unlikely for there to be holes in the coverage of this equation. Is that good enough?<br />No?<br />Ok. Well let's try to show it more generally then.</p>
-<h2 id="a-general-approach"><a href="#a-general-approach">A General Approach</a></h2>
+<h2 id="a-general-approach">A General Approach</h2>
 <p>In order to prove the equation generally, we will have to stop plugging in actual complex numbers. Every time we plug in an actual complex number, we doom ourselves to a loss of generality. But does that mean that all of our hard work in creating the machinery of the ComplexNumber class will go to waste? Certainly not.</p>
 <p>We will now create a class to represent something that is not quite a number. It will behave a lot like a number, but without every having an actual value. We will call such nebulous artifacts &quot;variables&quot; for now. I'm not sure that is quite the right word, you can decide for yourself.</p>
 <p>We will put Variables inside ComplexNumbers as real and imaginary components. So Variables will need to be able to do everything that a number does.</p>
@@ -274,7 +265,7 @@ bz = [ComplexNumber(<span class="dv">9</span>, -<span class="dv">2</span>), Comp
 
   <span class="kw">def</span> <span class="ot">__ne__</span>(left, right):
     <span class="kw">return</span> not (left == right)</code></pre>
-<h2 id="final-test"><a href="#final-test">Final Test</a></h2>
+<h2 id="final-test">Final Test</h2>
 <p>Now that all of the pieces are in place we should be able to test whether <code>(a - b)*</code> really does equal <code>a* - b*</code>.</p>
 <p>We will compose the complex numbers <code>a</code> and <code>b</code> from two variables each. One for the real component, and another for the imaginary component.</p>
 <pre class="sourceCode python"><code class="sourceCode python"><span class="dt">print</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">General evaluation:&quot;</span>
