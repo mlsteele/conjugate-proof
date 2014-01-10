@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# available pandoc color schemes: kate, monochrome, espresso, zenburn, haddock, tango
 echo "Rendering markdown to html..."
 pandoc proof.md -c pandoc.css -o proof.html
 
